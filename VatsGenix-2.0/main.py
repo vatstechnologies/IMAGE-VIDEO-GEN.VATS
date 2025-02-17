@@ -3,7 +3,7 @@ import os
 import pyttsx3
 import streamlit as st
 from gtts import gTTS
-from moviepy.editor import *  # If you're not using moviepy, remove this line
+#from moviepy.editor import *   If you're not using moviepy, remove this line
 from PIL import Image
 import requests
 from dotenv import load_dotenv
