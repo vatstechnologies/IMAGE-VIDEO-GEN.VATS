@@ -1,7 +1,7 @@
 openai==0.28.0        # Latest version of OpenAI compatible with Python 3.11
-requests     # For HTTP requests
-streamlit    # Streamlit version compatible with Python 3.11
-pyttsx3        # Text-to-speech conversion
-gTTS        # For text-to-speech functionality
-Pillow        # Image processing
-python-dotenv # For environment variable management
+requests
+streamlit
+moviepy
+pillow
+python-dotenv
+ # For environment variable management
