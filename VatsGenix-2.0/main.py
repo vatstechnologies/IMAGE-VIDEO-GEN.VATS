@@ -15,13 +15,13 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
 # Hugging Face API Key (Optional)
-#HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+HYGEN_API_KEY = os.getenv("HYGEN_API_KEY")
 
 # 11 Labs API Key (Optional for Text-to-Speech)
 ELEVEN_LABS_API_KEY = os.getenv("ELEVEN_LABS_API_KEY")
 
 # Streamlit App Title
-st.title("🖼️✨ VatsGenix - AI Image & Text Generator")
+st.title("🖼️✨ VatsGenix.AI - AI Image & Text Generator")
 
 # Sidebar for Navigation
 st.sidebar.title("🔍 Select Mode")
@@ -59,12 +59,15 @@ elif option == "Generate Image":
         if img_prompt:
             with st.spinner("Generating image..."):
                 try:
-                    response = openai.Image.create(
-                        prompt=img_prompt,
-                        n=1,
-                        size="1024x1024"
-                    )
-                    image_url = response['data'][0]['url']
+                   response = openai.images.generate(
+    model="dall-e-3",
+    prompt=img_prompt,
+    size="1024x1024",
+    quality="standard",
+    n=1
+)
+image_url = response.data[0].url
+
                     st.image(image_url, caption="Generated Image")
                     st.success("✅ Successfully generated!")
                 except Exception as e:
