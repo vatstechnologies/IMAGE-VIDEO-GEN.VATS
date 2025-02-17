@@ -11,9 +11,9 @@ from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env
 
 # OpenAI API key from environment
-#openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
-openai.api_key = "sk-FoZ520Pq8ONHL1DsGzOeEltpgdclgdWQRBJXPfSq1rT3BlbkFJ9l1LyA4B2AvE9aUHwWzEZC8WU-Wpz89Q5IRTs0gvkA"
+
 
 # Streamlit page config
 st.set_page_config(page_title="VatsGenix AI Podcast Generator", page_icon=":scientist : ", layout="wide")
