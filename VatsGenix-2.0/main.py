@@ -3,7 +3,6 @@ import os
 import pyttsx3
 import streamlit as st
 from gtts import gTTS
-from moviepy.editor import *  # For video editing (if you're using moviepy)
 from PIL import Image
 import requests
 from dotenv import load_dotenv
