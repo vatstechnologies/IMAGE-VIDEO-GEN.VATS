@@ -1,6 +1,8 @@
-#openai==0.28.0    Latest version of OpenAI compatible with Python 3.11
-openai==0.28.0
-moviepy==1.0.3  # Add the latest version if you need moviepy functionality
-Pillow==8.3.2  # For image handling if needed
-streamlit  # Adjust Streamlit version if necessary
-
+openai==0.27.0          # OpenAI GPT for text generation
+requests==2.28.2        # For making API requests
+streamlit==1.17.0       # For Streamlit frontend
+pyttsx3==2.90           # For text-to-speech conversion
+gTTS==2.2.3             # Another text-to-speech option
+moviepy==1.0.3          # For video editing
+Pillow==9.0.1           # For image processing
+python-dotenv==0.21.1   # For loading environment variables from .env
