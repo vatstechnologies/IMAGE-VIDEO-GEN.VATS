@@ -1,8 +1,8 @@
-openai==1.2.3
-requests==2.31.0
-streamlit==1.25.0
-pyttsx3==2.90
-gTTS==2.3.2
-moviepy==1.0.3
-Pillow==9.4.0
-python-dotenv==1.0.0
+openai==1.51.2
+requests
+streamlit
+pyttsx3
+gtts
+moviepy
+pillow
+python-dotenv
