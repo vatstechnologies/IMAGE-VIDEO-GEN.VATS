@@ -1,0 +1,8 @@
+openai==0.27.0          # OpenAI GPT for text generation
+requests==2.28.2        # For making API requests
+streamlit==1.17.0       # For Streamlit frontend
+pyttsx3==2.90           # For text-to-speech conversion
+gTTS==2.2.3             # Another text-to-speech option
+moviepy==1.0.3          # For video editing
+Pillow==9.0.1           # For image processing
+python-dotenv==0.21.1   # For loading environment variables from .env
