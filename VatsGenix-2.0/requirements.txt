@@ -1,6 +1,6 @@
 #openai==0.28.0    Latest version of OpenAI compatible with Python 3.11
-openai==1.0.0
+openai==0.28.0
 moviepy==1.0.3  # Add the latest version if you need moviepy functionality
 Pillow==8.3.2  # For image handling if needed
-streamlit==1.10.0  # Adjust Streamlit version if necessary
+streamlit  # Adjust Streamlit version if necessary
 
