@@ -1,8 +1,8 @@
-openai==1.2.1          # Updated OpenAI API
-requests==2.28.2       # For making HTTP requests
-streamlit==1.19.0     # For the frontend (streamlit)
-pyttsx3==2.90         # For text-to-speech conversion
-gTTS==2.2.4           # Another text-to-speech option
-moviepy==1.0.3        # For video editing
-Pillow==9.2.0         # For image processing
-python-dotenv==0.20.0  # To load environment variables
+openai==0.28.0        # Latest version of OpenAI compatible with Python 3.11
+moviepy==1.0.3        # Latest version of MoviePy compatible with Python 3.11
+requests==2.28.2      # For HTTP requests
+streamlit==1.19.0    # Streamlit version compatible with Python 3.11
+pyttsx3==2.90        # Text-to-speech conversion
+gTTS==2.2.4          # For text-to-speech functionality
+Pillow==9.2.0        # Image processing
+python-dotenv==0.20.0 # For environment variable management
