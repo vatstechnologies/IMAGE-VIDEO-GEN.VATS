@@ -1,5 +1,4 @@
 openai==0.28.0        # Latest version of OpenAI compatible with Python 3.11
-moviepy       # Latest version of MoviePy compatible with Python 3.11
 requests     # For HTTP requests
 streamlit    # Streamlit version compatible with Python 3.11
 pyttsx3        # Text-to-speech conversion
