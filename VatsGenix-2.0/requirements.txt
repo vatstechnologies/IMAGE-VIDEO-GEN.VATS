@@ -1,8 +1,8 @@
 openai==0.28.0        # Latest version of OpenAI compatible with Python 3.11
-moviepy==1.0.3        # Latest version of MoviePy compatible with Python 3.11
-requests==2.28.2      # For HTTP requests
+moviepy       # Latest version of MoviePy compatible with Python 3.11
+requests     # For HTTP requests
 streamlit    # Streamlit version compatible with Python 3.11
 pyttsx3        # Text-to-speech conversion
 gTTS        # For text-to-speech functionality
-Pillow==9.2.0        # Image processing
+Pillow        # Image processing
 python-dotenv # For environment variable management
