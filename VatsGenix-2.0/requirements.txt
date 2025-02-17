@@ -1,8 +1,8 @@
-streamlit
+moviepy
 openai
+requests
+streamlit
 pyttsx3
 gTTS
-requests
-python-dotenv
-moviepy
 Pillow
+python-dotenv
