@@ -1,8 +1,8 @@
 moviepy==1.0.3  # Use a version compatible with Python 3.11
 openai==0.27.0
-requests==2.28.1
-streamlit==1.16.0
-pyttsx3==2.90
-gTTS==2.2.3
-Pillow==9.2.0
-python-dotenv==0.20.0
+requests
+streamlit
+pyttsx3
+gTTS
+Pillow
+python-dotenv
