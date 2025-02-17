@@ -3,7 +3,7 @@ import os
 import pyttsx3
 import streamlit as st
 from gtts import gTTS
-#from moviepy.editor import *   If you're not using moviepy, remove this line
+from moviepy.editor import *  # For video editing (if you're using moviepy)
 from PIL import Image
 import requests
 from dotenv import load_dotenv
@@ -14,16 +14,16 @@ load_dotenv()  # Load environment variables from .env
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Streamlit page config
-st.set_page_config(page_title="VatsGenixAI -  Podcast Generator", page_icon=":guardsman:", layout="wide")
+st.set_page_config(page_title="VatsGenix AI Podcast Generator", page_icon=":scientist : ", layout="wide")
 
 # Sidebar setup
 st.sidebar.title("Settings")
 prompt = st.sidebar.text_input("Enter prompt:", "Describe a fascinating AI story")
 
-# Function to generate text from OpenAI API
+# Function to generate text from OpenAI API (Updated)
 def generate_text(prompt):
     response = openai.Completion.create(
-        engine="text-davinci-003",
+        model="text-davinci-003",  # Updated for the latest version
         prompt=prompt,
         max_tokens=100,
         n=1,
@@ -57,7 +57,7 @@ def play_audio():
 
 # Main function
 def main():
-    st.title("AI Podcast Generator")
+    st.title("VatsGenix AI Podcast Generator")
 
     if prompt:
         # Generate text from OpenAI API
