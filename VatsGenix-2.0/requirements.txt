@@ -1,8 +1,8 @@
-openai==1.51.2
-requests
+openai
 streamlit
+moviepy
+requests
+python-dotenv
+pillow
 pyttsx3
 gtts
-moviepy
-pillow
-python-dotenv
