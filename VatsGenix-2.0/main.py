@@ -1,117 +1,94 @@
-import openai
 import streamlit as st
-import pyttsx3
-from gtts import gTTS
-from moviepy.editor import ImageClip, concatenate_videoclips
-from PIL import Image
-import requests
-from io import BytesIO
-from dotenv import load_dotenv
+import openai
 import os
+import requests
+from dotenv import load_dotenv
+from PIL import Image
+from io import BytesIO
+import pyttsx3
 
-# Load the .env file for your API keys and other sensitive info
+# Load environment variables from .env
 load_dotenv()
 
-# Set your OpenAI API key, Hygen API key, and 11 Labs API key
-openai.api_key = os.getenv('OPENAI_API_KEY')  # Ensure you've set this in your .env file
-HYGEN_API_KEY = os.getenv('HYGEN_API_KEY')  # Hygen API key
-ELEVEN_LABS_API_KEY = os.getenv('ELEVEN_LABS_API_KEY')  # 11 Labs API key
+# OpenAI API Key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+openai.api_key = OPENAI_API_KEY
 
-# Function to generate text using OpenAI
-def generate_text(prompt):
-    response = openai.Completion.create(
-        model="text-davinci-003",  # Use the latest OpenAI model
-        prompt=prompt,
-        max_tokens=100
-    )
-    return response.choices[0].text.strip()
+# Hugging Face API Key (Optional)
+#HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
-# Function to generate text using Hygen API (for example: script generation)
-def generate_text_hygen(prompt):
-    url = "https://api.hygen.com/v1/generate"  # Change to Hygen's actual endpoint if different
-    headers = {
-        'Authorization': f'Bearer {HYGEN_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-    data = {"prompt": prompt}
-    response = requests.post(url, json=data, headers=headers)
-    if response.status_code == 200:
-        return response.json().get('text')
-    else:
-        return f"Error: {response.status_code}"
+# 11 Labs API Key (Optional for Text-to-Speech)
+ELEVEN_LABS_API_KEY = os.getenv("ELEVEN_LABS_API_KEY")
 
-# Function to convert text to speech using pyttsx3
-def text_to_speech_pyttsx3(text):
-    engine = pyttsx3.init()
-    engine.say(text)
-    engine.runAndWait()
+# Streamlit App Title
+st.title("🖼️✨ VatsGenix - AI Image & Text Generator")
 
-# Function to convert text to speech using gTTS (Google TTS)
-def text_to_speech_gtts(text):
-    tts = gTTS(text)
-    tts.save("output.mp3")
-    os.system("start output.mp3")  # For Windows; use "mpg321 output.mp3" on Linux
+# Sidebar for Navigation
+st.sidebar.title("🔍 Select Mode")
+option = st.sidebar.radio("Choose an AI Task:", ["Generate Text", "Generate Image", "Text-to-Speech"])
 
-# Function to convert text to speech using 11 Labs API (AI voice generation)
-def text_to_speech_11labs(text):
-    url = "https://api.elevenlabs.io/v1/speech"  # Change to 11 Labs' actual endpoint if different
-    headers = {
-        'Authorization': f'Bearer {ELEVEN_LABS_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-    data = {
-        "text": text,
-        "voice": "en_us_male",  # Specify the desired voice, this is an example
-        "model": "elevenlabs-voice-model"  # Specify the voice model if required
-    }
-    response = requests.post(url, json=data, headers=headers)
-    if response.status_code == 200:
-        with open("output_audio.wav", "wb") as f:
-            f.write(response.content)
-        os.system("start output_audio.wav")  # Play the audio file
-    else:
-        print(f"Error generating speech: {response.status_code}")
+### ========================== TEXT GENERATION ============================
+if option == "Generate Text":
+    st.subheader("📝 AI-Powered Text Generation")
+    user_input = st.text_area("Enter your prompt:", "Write a futuristic story about AI.")
 
-# Function to generate a video (if required)
-def generate_video(image_url, output_filename="output_video.mp4"):
-    response = requests.get(image_url)
-    img = Image.open(BytesIO(response.content))
+    if st.button("Generate Text"):
+        if user_input:
+            with st.spinner("Generating text..."):
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4",
+                        messages=[
+                            {"role": "system", "content": "You are a helpful AI assistant."},
+                            {"role": "user", "content": user_input}
+                        ],
+                        max_tokens=200
+                    )
+                    generated_text = response['choices'][0]['message']['content']
+                    st.success("✅ Successfully generated!")
+                    st.write(generated_text)
+                except Exception as e:
+                    st.error(f"⚠️ Error: {e}")
 
-    # Create an ImageClip from the downloaded image
-    clip = ImageClip(img)
-    clip = clip.set_duration(5)  # 5 seconds duration for the clip
-    clip.write_videofile(output_filename, fps=24)
+### ========================== IMAGE GENERATION ============================
+elif option == "Generate Image":
+    st.subheader("🖼️ AI-Powered Image Generation")
+    img_prompt = st.text_area("Enter an image description:", "A futuristic cyberpunk city at night.")
 
-# Streamlit app
-st.title('AI Podcast Generator')
+    if st.button("Generate Image"):
+        if img_prompt:
+            with st.spinner("Generating image..."):
+                try:
+                    response = openai.Image.create(
+                        prompt=img_prompt,
+                        n=1,
+                        size="1024x1024"
+                    )
+                    image_url = response['data'][0]['url']
+                    st.image(image_url, caption="Generated Image")
+                    st.success("✅ Successfully generated!")
+                except Exception as e:
+                    st.error(f"⚠️ Error: {e}")
 
-# User input for the prompt
-prompt = st.text_input("Enter your prompt:")
+### ========================== TEXT-TO-SPEECH (11 LABS) ============================
+elif option == "Text-to-Speech":
+    st.subheader("🔊 AI-Powered Text-to-Speech")
+    tts_text = st.text_area("Enter text to convert into speech:", "Hello, this is an AI-generated voice.")
 
-if prompt:
-    st.write("Generating response...")
+    if st.button("Convert to Speech"):
+        if tts_text:
+            with st.spinner("Converting to speech..."):
+                try:
+                    response = requests.post(
+                        "https://api.elevenlabs.io/v1/text-to-speech",
+                        json={"text": tts_text},
+                        headers={"Authorization": f"Bearer {ELEVEN_LABS_API_KEY}"}
+                    )
+                    audio_data = response.content
+                    st.audio(audio_data, format="audio/mp3")
+                    st.success("✅ Successfully generated speech!")
+                except Exception as e:
+                    st.error(f"⚠️ Error: {e}")
 
-    # Choose between OpenAI and Hygen for text generation
-    use_hygen = st.checkbox("Use Hygen for text generation")  # Checkbox to select Hygen
-    if use_hygen:
-        generated_text = generate_text_hygen(prompt)
-    else:
-        generated_text = generate_text(prompt)
-
-    st.write("Generated Text:")
-    st.write(generated_text)
-
-    # Text-to-speech conversion using 11 Labs (or fallback to gTTS)
-    use_11labs = st.checkbox("Use 11 Labs for voice generation")  # Checkbox to select 11 Labs
-    if use_11labs:
-        text_to_speech_11labs(generated_text)
-    else:
-        text_to_speech_gtts(generated_text)
-
-    # Optionally, create a video if required (add your image URL)
-    # Uncomment the following line to generate a video
-    # generate_video("https://your-image-url.com/image.jpg")
-    
-    st.write("Process complete!")
-else:
-    st.write("Please enter a prompt to generate text.")
+# Footer
+st.markdown("🚀 Developed by **VatsGenix AI**")
