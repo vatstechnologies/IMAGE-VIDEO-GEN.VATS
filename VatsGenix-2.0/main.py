@@ -1,5 +1,7 @@
 import openai
 import requests
+import os
+os.system('pip install moviepy')
 from gtts import gTTS
 from moviepy.editor import ImageClip, concatenate_videoclips
 from config import OPENAI_API_KEY, ELEVEN_LABS_API_KEY, HYGEN_API_KEY
