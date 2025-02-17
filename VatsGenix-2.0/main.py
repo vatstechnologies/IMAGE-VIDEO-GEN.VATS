@@ -1,80 +1,119 @@
+import streamlit as st
 import openai
 import os
-import pyttsx3
-import streamlit as st
-from gtts import gTTS
-from PIL import Image
 import requests
+from moviepy.editor import ImageClip, concatenate_videoclips
+from PIL import Image
+from io import BytesIO
 from dotenv import load_dotenv
 
-load_dotenv()  # Load environment variables from .env
+# Load environment variables
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+HYGEN_API_KEY = os.getenv("HYGEN_API_KEY")  # If using Hygen API
+ELEVEN_LABS_API_KEY = os.getenv("ELEVEN_LABS_API_KEY")  # If using Eleven Labs
 
-# OpenAI API key from environment
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = OPENAI_API_KEY
 
+# Streamlit UI
+st.title("🎙️ AI Podcast Generator")
+st.write("Generate AI-powered podcast with images and videos.")
 
+# User input
+prompt = st.text_input("Enter your podcast topic:")
 
-# Streamlit page config
-st.set_page_config(page_title="VatsGenix AI Podcast Generator", page_icon=":scientist : ", layout="wide")
-
-# Sidebar setup
-st.sidebar.title("Settings")
-prompt = st.sidebar.text_input("Enter prompt:", "Describe a fascinating AI story")
-
-# Function to generate text from OpenAI API (Updated)
+# Function to generate text using OpenAI GPT
 def generate_text(prompt):
-    response = openai.Completion.create(
-        model="text-davinci-003",  # Updated for the latest version
-        prompt=prompt,
-        max_tokens=100,
-        n=1,
-        stop=None,
-        temperature=0.7
-    )
-    return response.choices[0].text.strip()
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4",  # Ensure latest OpenAI model
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=500
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"Error generating text: {e}")
+        return None
 
-# Function to convert text to speech using gTTS
-def text_to_speech(text):
-    tts = gTTS(text=text, lang='en')
-    tts.save("audio.mp3")
-    return "audio.mp3"
+# Function to generate AI Image
+def generate_image(img_prompt):
+    try:
+        response = openai.images.generate(
+            model="dall-e-3",  # Latest OpenAI Image model
+            prompt=img_prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1
+        )
+        image_url = response.data[0].url
+        return image_url
+    except openai.OpenAIError as e:
+        st.error(f"Error generating image: {e}")
+        return None
 
-# Function to display the image
-def generate_image(prompt):
-    response = openai.Image.create(
-        prompt=prompt,
-        n=1,
-        size="1024x1024"
-    )
-    image_url = response['data'][0]['url']
-    img = Image.open(requests.get(image_url, stream=True).raw)
-    return img
+# Function to generate audio using Eleven Labs API
+def generate_audio(text):
+    try:
+        url = "https://api.elevenlabs.io/v1/text-to-speech"
+        headers = {
+            "Authorization": f"Bearer {ELEVEN_LABS_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "text": text,
+            "voice": "Adam"  # Change voice if needed
+        }
+        response = requests.post(url, headers=headers, json=data)
+        if response.status_code == 200:
+            return response.content
+        else:
+            st.error("Failed to generate audio.")
+            return None
+    except Exception as e:
+        st.error(f"Audio generation error: {e}")
+        return None
 
-# Function to play audio
-def play_audio():
-    audio_file = open("audio.mp3", "rb")
-    audio_bytes = audio_file.read()
-    st.audio(audio_bytes, format="audio/mp3")
+# Function to create a video
+def create_video(image_url):
+    try:
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        img.save("temp_image.png")
 
-# Main function
-def main():
-    st.title("VatsGenix AI Podcast Generator")
+        image_clip = ImageClip("temp_image.png", duration=10)
+        video = concatenate_videoclips([image_clip])
+        video.write_videofile("output_video.mp4", fps=24)
+        
+        return "output_video.mp4"
+    except Exception as e:
+        st.error(f"Video generation error: {e}")
+        return None
 
-    if prompt:
-        # Generate text from OpenAI API
-        generated_text = generate_text(prompt)
-        st.subheader("Generated Text:")
+# Main Process
+if prompt:
+    st.subheader("🎙️ Generated Podcast Content")
+    generated_text = generate_text(prompt)
+    
+    if generated_text:
         st.write(generated_text)
 
-        # Convert text to speech and play audio
-        audio_path = text_to_speech(generated_text)
-        st.subheader("Audio Output:")
-        play_audio()
+        # Generate Image
+        st.subheader("🖼️ AI-Generated Image")
+        image_url = generate_image(prompt)
+        if image_url:
+            st.image(image_url, caption="Generated by DALL·E")
 
-        # Generate and display image
-        image = generate_image(prompt)
-        st.subheader("Generated Image:")
-        st.image(image)
+        # Generate Audio
+        st.subheader("🔊 AI Voiceover")
+        audio_data = generate_audio(generated_text)
+        if audio_data:
+            st.audio(audio_data, format="audio/mp3")
 
-if __name__ == "__main__":
-    main()
+        # Create Video
+        st.subheader("🎬 AI-Generated Video")
+        video_path = create_video(image_url)
+        if video_path:
+            st.video(video_path)
+
+st.write("Developed by **VatsGenix** 🚀")
